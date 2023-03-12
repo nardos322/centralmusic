@@ -11,26 +11,61 @@ const pool = mysql.createPool({
 })
 
 app.use(express.json());
-app.get('/products/guitar-electric', async (req, res) => {
-//     const data =  await pool.query(`
-//     SELECT product.id, price, product.name, description, stock, name_subcategory, name_category,
-// marca.name as marca, model, line, body_finish, material_body, hand, color, material_fretboard
-// FROM product
-// INNER JOIN subcategory ON product.subcategory_id = subcategory.id
-// INNER JOIN category ON subcategory.category_id = category.id
-// INNER JOIN marca ON product.marca_id = marca.id
-// INNER JOIN guitar_electric_details ON guitar_electric_details.product_id = product.id`);
-const data = await pool.query(`SELECT * FROM product
-INNER JOIN subcategory ON product.subcategory_id = subcategory.id
-INNER JOIN category ON category.id = subcategory.category_id
-INNER JOIN marca ON product.marca_id = marca.id`)
+app.get('/products/:category/:subcategory?', async (req, res) => {
 
-return res.json(data[0])
+    let rowCategory = req.params.category;
+    let category = rowCategory.replaceAll('-', ' ');
+    let rowSubcategory = req.params.subcategory;
+    let subcategory
+    if(rowSubcategory){
+        subcategory = rowSubcategory.replaceAll('-', ' ');
+    }
+    
+   
+    let queryCategories = await pool.query(`SELECT category FROM category`);
+    let querySubcategories = await pool.query(`SELECT subcategory FROM subcategory
+    INNER JOIN category ON subcategory.idCategory= category.idCategory
+    WHERE category = '${category}'`);
+    let subcategories = querySubcategories[0];
+   
+    let i = 0;
+
+    while(i < queryCategories[0].length){
+        
+        if(queryCategories[0][i].category == category && (subcategories[i].subcategory == subcategory || subcategory)){
+            console.log(subcategories[i])
+            let result = await pool.query(`SELECT id, price, name, description, stock, subcategory.subcategory, 
+            category.category, marca.marca 
+            FROM product
+            INNER JOIN subcategory ON product.idSubcategory = subcategory.idSubcategory
+            INNER JOIN category ON category.idCategory = subcategory.idCategory
+            INNER JOIN marca ON product.idMarca = marca.idMarca
+            WHERE subcategory = '${subcategory}'`)
+            
+            return result[0].length == 0 ? res.json({msg: 'no se encontraron productos o la ruta es erronea'}) : res.json(result[0]);
+        }else if(queryCategories[0][i].category == category && !subcategory){
+            return res.json(subcategories)
+        }else if(queryCategories[0][i].category == category && !(subcategories[i].subcategory == subcategory)){
+            return res.json({msg: 'no se encontraron productos'})
+        }
+        
+        
+        i++;
+    }
+    
+    
+    return res.send('categoria no encontrada');
+    
+
+
+    
 })
 
 app.get('/', (req, res) => {
     res.send('API central Music');
 });
+
+
 
 
 app.listen(PORT, () => {

@@ -28,6 +28,24 @@ SELECT * FROM product;
 SELECT * from marca;
 
 INSERT INTO product VALUES
-(DEFAULT, 5000, 'guitarra del chaqueño', 'guitarra hecha en chaco', 1, 3, 3);
+(DEFAULT, 10000, 'fender telecaster', 'telecaster año 60', 10, 1, 1);
 
+SELECT product.id, price, name, description, stock, subcategory.subcategory, 
+category.category, marca.marca, guitar_electric_details.*
+FROM product
+INNER JOIN subcategory ON product.idSubcategory = subcategory.idSubcategory
+INNER JOIN category ON category.idCategory = subcategory.idCategory
+INNER JOIN marca ON product.idMarca = marca.idMarca
+INNER JOIN guitar_electric_details ON product.id = guitar_electric_details.product_id
+WHERE product.id = 1;
+
+SELECT * FROM product
+INNER JOIN subcategory ON product.idSubcategory = subcategory.idSubcategory
+INNER JOIN category ON category.idCategory = subcategory.idCategory
+INNER JOIN marca ON product.idMarca = marca.idMarca
+WHERE category = 'instrumentos de cuerda';
+
+SELECT * FROM subcategory
+INNER JOIN category ON subcategory.idCategory = category.idCategory
+WHERE category = 'instrumentos de cuerda'
 

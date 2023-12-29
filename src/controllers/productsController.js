@@ -31,7 +31,7 @@ export const productsController = {
                 total: 1
             },
             data: product[0][0]
-        })
+        });
     },
 
     getProductDetails: async (req, res) => {
@@ -44,7 +44,7 @@ export const productsController = {
     
         let resultDetails = tables.findIndex(table => {
             return table['Tables_in_centralmusic'] == details
-        })
+        });
         
        
     
@@ -99,7 +99,7 @@ export const productsController = {
                 })
             } else if (queryCategories[0][i].category == category && !(subcategories[i].subcategory == subcategory)){
             
-                return res.status(404).json({msg: 'no se encontraron productos'})
+                return res.status(404).json({msg: 'no se encontraron productos'});
             }
             
             
@@ -109,6 +109,24 @@ export const productsController = {
         
         return res.send('categoria no encontrada');
     
+    },
+
+    addProduct: async (req, res) => {
+        let {price, name, description, stock, subcategory, marca} = req.body;
+        productsQueries.addProduct(price, name, description, stock, subcategory, marca);
+        let allProducts = await productsQueries.AllProducts();
+
+        return res.status(201).json({
+            meta: {
+                endPoint: getUrl(req),
+                message: 'producto agregado',
+
+            },
+            total: allProducts[0].length,
+            data: allProducts[0]
+            
+        });
+        
     }
 }
 

@@ -47,11 +47,23 @@ export const productsQueries = {
                 INNER JOIN ${details} ON product.id = ${details}.product_id
                 WHERE product.id = ${id}`)
     
-            return detailsQuery
+            return detailsQuery;
         }catch(err){
-            console.log(err)
+            console.log(err);
         }
        
+    },
+
+    addProduct: async (price, name, description, stock, subcategory, marca) => {
+        try {
+            let addProductQuery = await pool.query(`INSERT INTO product (price, name, description, stock, idSubcategory, idMarca)
+            VALUES ('${price}', '${name}', '${description}', '${stock}','${subcategory}' , '${marca}' )`)
+        
+            return addProductQuery;
+        
+        }catch(err){
+            console.log(err);
+        }
     }
 
 }

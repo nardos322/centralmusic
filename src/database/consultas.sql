@@ -1,4 +1,4 @@
--- Active: 1678539129192@@127.0.0.1@3306@centralmusic
+-- Active: 1678907771429@@127.0.0.1@3306@centralmusic
 
 SELECT id, price, name, description, stock, subcategory.subcategory, 
 category.category, marca.marca 
@@ -49,3 +49,10 @@ SELECT * FROM subcategory
 INNER JOIN category ON subcategory.idCategory = category.idCategory
 WHERE category = 'guitarras'
 
+
+INSERT INTO product (price, name, description, stock, `idSubcategory`, `idMarca`)
+VALUES ('500', 'guitarra fender mexicana', 'guitarra premuim original', 30, 1, 1 )
+
+
+INSERT INTO product (price, name, description, stock, `idSubcategory`, `idMarca`)
+VALUES ('3500', 'amplificador fender twin reverb', 'amplificador valvular 100 watts', 5, 4, 1 )

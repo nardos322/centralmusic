@@ -12,10 +12,10 @@ export const productsQueries = {
                 INNER JOIN marca ON product.idMarca = marca.idMarca`);
     
         
-            return allProducts
+            return allProducts;
     
         }catch(err){
-            console.log(err)
+            console.log(err);
         }
     },
     
@@ -38,7 +38,7 @@ export const productsQueries = {
     
     detailsProduct: async(id, details) => {
         try {
-            let detailsQuery = await pool.query(`SELECT product.id, price, name, description, stock, subcategory.subcategory, 
+            let detailsQuery = await pool.query(`SELECT product_id, price, name, description, stock, subcategory.subcategory, 
                 category.category, marca.marca, ${details}.*
                 FROM product
                 INNER JOIN subcategory ON product.idSubcategory = subcategory.idSubcategory

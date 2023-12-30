@@ -5,3 +5,22 @@ GET http://localhost:3000/products/instrumentos-de-cuerda/guitarra-electrica/gui
 
 ###
 GET http://localhost:3000/api/products/guitarras HTTP/1.1
+
+###
+GET http://localhost:3000/api/products/amplificadores HTTP/1.1
+
+
+###
+
+GET http://localhost:3000/api/products/categories/amplifier/amplificador-para-bajo HTTP/1.1
+
+
+###
+GET http://localhost:3000/api/products/details/id/2 HTTP/1.1
+
+###
+
+GET http://localhost:3000/api/products/categories/amplifier HTTP/1.1
+###
+
+POST http://localhost:3000/api/products/details/guitar_details/add/id/2 HTTP 1.1

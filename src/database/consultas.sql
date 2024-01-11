@@ -1,4 +1,4 @@
--- Active: 1678539129192@@127.0.0.1@3306@centralmusic
+-- Active: 1678907771429@@127.0.0.1@3306@centralmusic
 
 SELECT id, price, name, description, stock, subcategory.subcategory, 
 category.category, marca.marca 
@@ -43,7 +43,7 @@ SELECT * FROM product
 INNER JOIN subcategory ON product.idSubcategory = subcategory.idSubcategory
 INNER JOIN category ON category.idCategory = subcategory.idCategory
 INNER JOIN marca ON product.idMarca = marca.idMarca
-WHERE category = 'guitarras';
+WHERE category = 'guitar';
 
 SELECT * FROM subcategory
 INNER JOIN category ON subcategory.idCategory = category.idCategory

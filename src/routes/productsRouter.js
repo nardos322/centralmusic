@@ -8,7 +8,7 @@ addProduct, addDetailsProduct} = productsController;
 productsRouter.get('/', getAllProducts);
 productsRouter.get('/id/:id', getProduct);
 productsRouter.get('/details/id/:id', getProductDetails);
-productsRouter.get('/categories/:category/:subcategory?', getProductsForCategory);
+productsRouter.get('/categories/:category?/:subcategory?', getProductsForCategory);
 productsRouter.post('/add', addProduct);
 productsRouter.post('/details/:productDetail/id/:id',addDetailsProduct );
 

@@ -114,16 +114,28 @@ export const productsController = {
 
     getProductsForCategory: async (req, res) => {
         try {
-            let category = req.params.category;
-            category = category.replaceAll('-', ' ');
-            let subcategory = req.params.subcategory;
+            let category;
+            let subcategory;
             let listProductsSubcategory = [];
+            let listCategories = [];
+            if(req.params.category || req.params.subcategory) {
+                category = req.params.category;
+                category = category.replaceAll('-', ' ');
+                subcategory = req.params.subcategory;
+            }
+
+            let categories = await categoriesQueries.showCategories();
+            categories = categories[0];
+
+            for(let i in categories){
+                listCategories.push(categories[i].category);
+                
+            }
+            
         
-           
-       
             let result = await categoriesQueries.showProductsForCategory(category);
             result = result[0];
-            
+    
             if(subcategory){
                 subcategory = subcategory.replaceAll('-', ' ');
                 for (let i in result){
@@ -149,15 +161,24 @@ export const productsController = {
                     data: listProductsSubcategory,
                 });
             }
-           
+            if(category){
+                return res.status(200).json({
+                    meta: {
+                        endPoint: getUrl(req),
+                        total: result.length
+                    },
+                    data: result,
+                });
+            }
             return res.status(200).json({
                 meta: {
                     endPoint: getUrl(req),
-                    total: result.length
+                    total: listCategories.length
                 },
-                data: result,
+                categories: listCategories,
             });
         } catch(err){
+           
             return res.status(500).json({
                 meta: {
                     endPoint: getUrl(req),

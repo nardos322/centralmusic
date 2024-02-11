@@ -34,7 +34,7 @@ describe('GET products', () => {
             
     });
 
-    test('products for categories', async () => {
+    test('categories list', async () => {
         const response = await request(app)
             .get('/api/products/categories')
             .expect('Content-Type', /json/)
@@ -43,4 +43,44 @@ describe('GET products', () => {
         expect(categories).toEqual(['guitar','efect','amplifier']);
         
     });
+
+    
 });
+
+describe('GET products for category', () => {
+
+    test('products for category', async () => {
+        const categories = ['amplifier', 'guitar', 'efect'];
+        let productsList = [];
+
+        for (let category of categories) {
+            
+            const response = await request(app)
+                .get(`/api/products/categories/${category}`)
+                .expect('Content-Type', /json/)
+                .expect(200);
+             productsList.push(response.body.data);
+    
+        }
+
+      
+
+        for (let i = 0; i < categories.length; i++){
+            for (const product of productsList[i]){
+                
+                if(i == 0){
+                    expect(product.category).toEqual('amplifier');
+                } else if (i == 1){
+                    expect(product.category).toEqual('guitar');
+                } else if (i == 2){
+                    expect(product.category).toEqual('efect');
+                }   
+            }
+           
+        }
+    
+        
+    });
+
+   
+})

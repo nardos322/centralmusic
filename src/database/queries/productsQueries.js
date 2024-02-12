@@ -11,7 +11,8 @@ export const productsQueries = {
                 INNER JOIN category ON category.idCategory = subcategory.idCategory
                 INNER JOIN marca ON product.idMarca = marca.idMarca`);
     
-        
+            allProducts = allProducts[0];
+
             return allProducts;
     
         }catch(err){
@@ -29,10 +30,11 @@ export const productsQueries = {
                 INNER JOIN category ON category.idCategory = subcategory.idCategory
                 INNER JOIN marca ON product.idMarca = marca.idMarca
                 WHERE id = ${id}`)
-    
-            return product
+            product = product[0][0];
+
+            return product;
         }catch(err){
-            console.log(err)
+            console.log(err);
         }
     },
     
@@ -46,7 +48,8 @@ export const productsQueries = {
                 INNER JOIN marca ON product.idMarca = marca.idMarca
                 INNER JOIN ${details} ON product.id = ${details}.product_id
                 WHERE product.id = ${id}`)
-    
+            detailsQuery = detailsQuery[0];
+            
             return detailsQuery;
         }catch(err){
             console.log(err);

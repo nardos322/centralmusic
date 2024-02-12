@@ -4,25 +4,40 @@ import { pool } from '../dbConnection.js';
 export const categoriesQueries = {
     showCategories: async () => {
         try {
-            let categories =  await pool.query(`SELECT category FROM category`)
+            let categories = [];
+            let res =  await pool.query(`SELECT category FROM category`)
+            res = res[0];
 
-            return categories
+            for(let i in res){
+                categories.push(res[i].category);
+                
+            }
+            
+            return categories;
         }catch(err){
-            console.log(err)
+            console.log(err);
         }
         
     },
     showSubcategories: async(category) => {
         try {   
-            let subcategories = await pool.query(`SELECT subcategory FROM subcategory
+            let subcategories = [];
+            let res = await pool.query(`SELECT subcategory FROM subcategory
             INNER JOIN category ON subcategory.idCategory= category.idCategory
             WHERE category = '${category}'`);
+            res = res[0];
 
-            return subcategories
+            for (const i in res ) {
+                subcategories.push(res[i].subcategory);
+            }
+
+            return subcategories;
         }catch(err){
-            console.log(err)
+            console.log(err);
         }
     },
+
+
     showProductsForSubcategory: async(subcategory) => {
         try {
             let res = await pool.query(`SELECT id, price, name, description, stock, subcategory.subcategory, 
@@ -47,6 +62,8 @@ export const categoriesQueries = {
                 INNER JOIN category ON category.idCategory = subcategory.idCategory
                 INNER JOIN marca ON product.idMarca = marca.idMarca
                 WHERE category = '${category}'`);
+            res = res[0]
+            
             return res;
 
         }catch(err){

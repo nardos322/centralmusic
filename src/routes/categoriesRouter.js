@@ -3,7 +3,7 @@ import { categoriesController } from '../controllers/categoriesController.js';
 const categoriesRouter = express.Router();
 
 
-categoriesRouter.get('/:category?', categoriesController.getCategories);
+categoriesRouter.get('/', categoriesController.getCategories);
 
 
 export {categoriesRouter};

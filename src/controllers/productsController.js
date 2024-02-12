@@ -16,8 +16,9 @@ export const productsController = {
                     endPoint: getUrl(req),
                     total: allProducts[0].length
                 },
-                data: allProducts[0],
+                data: allProducts,
             });
+
         }catch(err){
             return res.status(500).json({
                 message: 'error en la solicitud'
@@ -31,14 +32,14 @@ export const productsController = {
         try {
             let id = req.params.id;
             let product = await productsQueries.oneProduct(id);
-
-            if(product[0][0]){
+        
+            if(product){
                 return res.status(200).json({
                     meta: {
                         endPoint: getUrl(req),
                         total: 1
                     },
-                    data: product[0][0]
+                    data: product
                 });
             } else {
                 return res.status(200).json({
@@ -64,9 +65,7 @@ export const productsController = {
         try{
             let id = req.params.id;
         
-            let product = await productsQueries.oneProduct(id)
-            
-            product = product[0][0];
+            let product = await productsQueries.oneProduct(id);
             
             if(!product){
 
@@ -81,7 +80,7 @@ export const productsController = {
             
             let productDetails = await productsQueries.detailsProduct(id, `${product.category}_details`);
 
-            if(productDetails[0].length === 0) {
+            if(productDetails.length === 0) {
                 return res.status(200).json({
                     meta: {
                         endPoint: getUrl(req),
@@ -93,9 +92,9 @@ export const productsController = {
                 return res.status(200).json({
                     meta: {
                         endPoint: getUrl(req),
-                        total: productDetails[0].length
+                        total: productDetails.length
                     },
-                    data: productDetails[0],
+                    data: productDetails,
                 });
             }
                   
@@ -117,30 +116,26 @@ export const productsController = {
             let category;
             let subcategory;
             let listProductsSubcategory = [];
-            let listCategories = [];
+            let categoriesAndSub = {}
+            let categories = await categoriesQueries.showCategories();
+            
             if(req.params.category || req.params.subcategory) {
                 category = req.params.category;
                 category = category.replaceAll('-', ' ');
                 subcategory = req.params.subcategory;
             }
-
-            let categories = await categoriesQueries.showCategories();
-            categories = categories[0];
-
-            for(let i in categories){
-                listCategories.push(categories[i].category);
-                
+            let productsForCategory = await categoriesQueries.showProductsForCategory(category);
+           
+            for(const category of categories) {
+                categoriesAndSub[category] = await categoriesQueries.showSubcategories(category);
             }
             
-        
-            let result = await categoriesQueries.showProductsForCategory(category);
-            result = result[0];
-    
+          
             if(subcategory){
                 subcategory = subcategory.replaceAll('-', ' ');
-                for (let i in result){
-                    if(result[i].subcategory == subcategory){
-                        listProductsSubcategory.push(result[i]);
+                for (let i in productsForCategory){
+                    if(productsForCategory[i].subcategory == subcategory){
+                        listProductsSubcategory.push(productsForCategory[i]);
                         
                     }
                 }
@@ -165,17 +160,17 @@ export const productsController = {
                 return res.status(200).json({
                     meta: {
                         endPoint: getUrl(req),
-                        total: result.length
+                        total: productsForCategory.length
                     },
-                    data: result,
+                    data: productsForCategory,
                 });
             }
             return res.status(200).json({
                 meta: {
                     endPoint: getUrl(req),
-                    total: listCategories.length
+                    total: Object.keys(categoriesAndSub).length
                 },
-                categories: listCategories,
+                categories: categoriesAndSub,
             });
         } catch(err){
            
@@ -198,8 +193,7 @@ export const productsController = {
             let {price, name, description, stock, subcategory, marca} = req.body;
             productsQueries.addProduct(price, name, description, stock, subcategory, marca);
             let allProducts = await productsQueries.AllProducts();
-            allProducts = allProducts[0];
-    
+           
             return res.status(201).json({
                 meta: {
                     endPoint: getUrl(req),
